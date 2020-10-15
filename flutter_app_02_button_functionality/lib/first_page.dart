@@ -8,41 +8,50 @@ class MyFirstPage extends StatefulWidget {
 class _MyFirstPageState extends State<MyFirstPage> {
   bool _enabled = false;
   String _msg1 = '';
+  String _msg2 = '';
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
     Object onPressed1() {
       if (_enabled) {
         setState(() {
-          _msg1 = 'Enabled';
+          count > 0 ? _msg1 = 'Clicked $count' : _msg1 = 'Click Me';
         });
-        print('onPressed1 returning address of anon func but NOT running it');
         return () {
-          print('Anon func now running as button pressed');
+          setState(() {
+            count > 0 ? _msg1 = 'Clicked $count' : _msg1 = 'Click Me';
+          });
+          count++;
+          print(count);
         };
       } else {
         setState(() {
           _msg1 = '';
         });
-        print('onPressed1 returning NULL');
         return null;
       }
     }
 
     Object onPressed2() {
       if (_enabled) {
-        print(
-            'onPressed2 returning the result of running the anonymous function');
+        setState(() {
+          _msg2 = 'Reset';
+        });
         return () {
-          print('Anon func now running');
-        }();
+          setState(() {
+            _msg1 = 'Click Me';
+          });
+          count = 0;
+          print(count);
+        };
       } else {
-        print('onPressed2 returning NULL');
+        setState(() {
+          _msg2 = '';
+        });
         return null;
       }
     }
-
-    print('The build is being RUN');
 
     return Scaffold(
       appBar: AppBar(
@@ -54,19 +63,16 @@ class _MyFirstPageState extends State<MyFirstPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('enable functionality'),
+                Text('Enable functionality'),
                 Switch(
                     value: _enabled,
                     onChanged: (bool onChangedValue) {
-                      print('onChangedValue is $onChangedValue');
                       _enabled = onChangedValue;
                       setState(() {
                         if (_enabled) {
                           _msg1 = 'Enabled';
-                          print('_enabled is true');
                         } else {
                           _msg1 = '';
-                          print('_enabled is false');
                         }
                       });
                     }),
@@ -88,6 +94,21 @@ class _MyFirstPageState extends State<MyFirstPage> {
                     padding: EdgeInsets.all(20.0),
                     onPressed: onPressed1(),
                     child: Text(_msg1),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.all(20),
+                  child: MaterialButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    elevation: 8,
+                    textColor: Colors.blue.shade100,
+                    color: Colors.blue,
+                    highlightColor: Colors.red,
+                    splashColor: Colors.green.shade300,
+                    padding: EdgeInsets.all(20.0),
+                    onPressed: onPressed2(),
+                    child: Text(_msg2),
                   ),
                 ),
               ],
